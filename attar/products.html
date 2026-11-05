@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جميع المنتجات — شقير العطار</title>
+  <meta name="description" content="تصفح كل منتجات عطارة شقير العطار: البن البرازيلي، التوابل والبهارات المطحونة والحبوب الكاملة، الأعشاب والشاي، الحبوب والبقوليات، والمكرونات ومنتجات Wael Food.">
+  <meta name="theme-color" content="#344532">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="products">
+
+  <div id="app-header"></div>
+
+  <main>
+
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="مسار التنقل">
+          <a href="index.html">الرئيسية</a>
+          <span class="sep">/</span>
+          <span class="current">جميع المنتجات</span>
+        </nav>
+        <h1 class="section-title">جميع المنتجات</h1>
+        <p class="section-sub">كل منتجات العطارة في مكان واحد — دور، فلتر، واطلب على واتساب مباشرة.</p>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="toolbar">
+          <label class="search-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="search" id="pageSearch" placeholder="دور على منتج… مثلاً: كمون، بن، ورد" aria-label="بحث في المنتجات">
+          </label>
+        </div>
+        <div class="chips" id="catChips" style="margin-bottom:22px" role="tablist" aria-label="تصفية حسب القسم"></div>
+        <p class="result-count" id="resultCount"></p>
+        <div class="product-grid" id="productsGrid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="app-footer"></div>
+  <div class="search-overlay" id="searchOverlay"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

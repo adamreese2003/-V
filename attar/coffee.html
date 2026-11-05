@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>القهوة والبن — شقير العطار</title>
+  <meta name="description" content="بن برازيلي بدرجات تحميص مختلفة — فاتح، وسط، وغامق. اختار تحميصك واستفسر عن السعر والأوزان من عطارة شقير العطار في الرحاب.">
+  <meta name="theme-color" content="#344532">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="coffee">
+
+  <div id="app-header"></div>
+
+  <main>
+
+    <section class="page-hero">
+      <div class="container split-layout">
+        <div>
+          <nav class="breadcrumb" aria-label="مسار التنقل">
+            <a href="index.html">الرئيسية</a>
+            <span class="sep">/</span>
+            <span class="current">القهوة والبن</span>
+          </nav>
+          <h1 class="section-title">قهوتك… على مزاجك</h1>
+          <p class="section-sub">اختار درجة التحميص اللي بتحبها، واستمتع بطعم القهوة على طريقتك. بن برازيلي متوفر بدرجات التحميص التلاتة.</p>
+          <div class="hero-ctas" style="margin-top:28px">
+            <a class="btn btn-brass" href="#roasts">اختار التحميص</a>
+            <a class="btn btn-outline-light" href="products.html">كل المنتجات</a>
+          </div>
+        </div>
+        <div class="cat-hero-visual">
+          <img src="assets/img/interior-counter.png" alt="من داخل عطارة شقير العطار" loading="lazy" style="object-position:center 30%">
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-pattern-light" id="roasts" aria-labelledby="roastTitle">
+      <div class="container">
+        <div class="section-head center">
+          <span class="kicker">درجات التحميص</span>
+          <h2 class="section-title" id="roastTitle">اختار التحميص اللي على مزاجك</h2>
+          <p class="section-sub">كل درجة تحميص ليها طعمها المميز — اطلب درجتك على واتساب وأحنا نجهزهالك.</p>
+        </div>
+        <div class="roast-grid" id="roastGrid"></div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <h2 class="subhead">كل منتجات القهوة والبن <span id="count-coffee" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
+        <div class="product-grid" id="cat-coffee"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="app-footer"></div>
+  <div class="search-overlay" id="searchOverlay"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

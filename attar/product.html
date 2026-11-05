@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المنتج — شقير العطار</title>
+  <meta name="description" content="تفاصيل المنتج في عطارة شقير العطار — استفسر عن السعر والأوزان المتاحة واطلب على واتساب.">
+  <meta name="theme-color" content="#344532">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="product">
+
+  <div id="app-header"></div>
+
+  <main>
+
+    <section class="page-hero" style="padding-block: clamp(40px, 5vw, 64px)">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="مسار التنقل">
+          <a href="index.html">الرئيسية</a>
+          <span class="sep">/</span>
+          <a href="products.html">المنتجات</a>
+          <span class="sep">/</span>
+          <span class="current" id="crumbName">تفاصيل المنتج</span>
+        </nav>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: clamp(36px, 5vw, 64px)">
+      <div class="container">
+        <div class="detail-layout" id="productDetail"></div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="relatedWrap" style="display:none" aria-labelledby="relTitle">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">من نفس القسم</span>
+          <h2 class="section-title" id="relTitle">منتجات مشابهة</h2>
+        </div>
+        <div class="product-grid" id="relatedGrid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="app-footer"></div>
+  <div class="search-overlay" id="searchOverlay"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

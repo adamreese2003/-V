@@ -1,5 +1,6 @@
 /* ============================================================
    main.js — منطق الموقع المشترك بين كل الصفحات
+   كل النصوص والصور بتتقرأ من content.js + config.js
    ============================================================ */
 
 (function () {
@@ -7,6 +8,10 @@
 
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
   const $$ = (sel, ctx) => Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
+
+  const H = CONTENT.home;
+  const P = CONTENT.pages;
+  const C = CONTENT.common;
 
   /* ---------- أيقونات SVG ---------- */
 
@@ -16,7 +21,6 @@
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
     phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>',
-    leaf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>',
     menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
     info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
@@ -26,6 +30,19 @@
   /* ---------- أدوات مساعدة ---------- */
 
   const arDigits = (n) => String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el && value != null) el.textContent = value;
+  };
+  const setHTML = (id, value) => {
+    const el = document.getElementById(id);
+    if (el && value != null) el.innerHTML = value;
+  };
+  const setAttr = (id, attr, value) => {
+    const el = document.getElementById(id);
+    if (el && value != null) el.setAttribute(attr, value);
+  };
 
   function shade(hex, amt) {
     const n = parseInt(hex.slice(1), 16);
@@ -39,8 +56,7 @@
 
   let svgUid = 0;
 
-  /* جرة زجاجية بغطاء نحاسي — مستوحاة من موزعات العطارة الحقيقية
-     بديل موحد وأنيق لصور المنتجات بدون تصوير منتجات وهمية */
+  /* جرة زجاجية بغطاء نحاسي — بديل موحد لصور المنتجات */
   function jarSVG(color, seed, opts) {
     opts = opts || {};
     svgUid++;
@@ -79,17 +95,14 @@
       '<clipPath id="' + uid + 'c"><rect x="48" y="86" width="104" height="116" rx="12"/></clipPath>' +
       '</defs>' +
       '<ellipse cx="100" cy="210" rx="66" ry="9" fill="rgba(45,33,25,0.14)"/>' +
-      /* جسم الجرة الزجاجي */
       '<rect x="36" y="60" width="128" height="146" rx="20" fill="rgba(255,255,255,0.55)" stroke="rgba(45,33,25,0.18)" stroke-width="2"/>' +
       '<g clip-path="url(#' + uid + 'c)">' +
       '<rect x="48" y="86" width="104" height="116" fill="url(#' + uid + ')"/>' +
       dots + beans +
       '</g>' +
       '<rect x="48" y="86" width="104" height="116" rx="12" fill="none" stroke="rgba(45,33,25,0.15)" stroke-width="1.5"/>' +
-      /* لمعة الزجاج */
       '<rect x="52" y="96" width="10" height="98" rx="5" fill="rgba(255,255,255,0.4)"/>' +
       '<rect x="68" y="100" width="5" height="56" rx="2.5" fill="rgba(255,255,255,0.22)"/>' +
-      /* الغطاء النحاسي */
       '<circle cx="100" cy="24" r="8" fill="url(#' + uid + 'b)"/>' +
       '<path d="M54 56 C54 34 76 30 100 30 C124 30 146 34 146 56 L146 60 L54 60 Z" fill="url(#' + uid + 'b)"/>' +
       '<rect x="48" y="56" width="104" height="10" rx="5" fill="#A8905C"/>' +
@@ -101,7 +114,7 @@
     return "background:linear-gradient(165deg," + shade(color, 0.88) + "," + shade(color, 0.6) + ")";
   }
 
-  /* ---------- بيانات واتساب والهاتف ---------- */
+  /* ---------- واتساب ---------- */
 
   function waLink(text) {
     return "https://wa.me/" + SITE.whatsapp + "?text=" + encodeURIComponent(text);
@@ -127,35 +140,40 @@
       '<div class="pc-body">' +
       '<span class="pc-cat">' + catName(p.cat) + '</span>' +
       '<h3 class="pc-name"><a href="product.html?id=' + p.id + '">' + p.name + '</a></h3>' +
-      '<p class="pc-price">للاستفسار عن السعر، تواصل معانا</p>' +
+      '<p class="pc-price">' + C.priceNote + '</p>' +
       '<div class="pc-foot">' +
-      '<a class="wa-mini" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + ' اطلب واتساب</a>' +
+      '<a class="wa-mini" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + " " + C.orderBtn + '</a>' +
       '</div></div></article>';
   }
 
   function renderGrid(el, list) {
     if (!el) return;
+    const t = P.products;
     if (!list.length) {
       el.innerHTML = '<div class="empty-state" style="grid-column:1/-1">' + I.search +
-        '<h3>مفيش منتجات مطابقة</h3><p>جرب كلمة بحث تانية أو تصفح الأقسام، أو كلمنا واتساب وأحنا نخدمك.</p>' +
-        '<a class="btn btn-wa" target="_blank" rel="noopener" href="' + waLink(SITE.msgs.general) + '">' + I.wa + ' اسأل على واتساب</a></div>';
+        '<h3>' + t.emptyTitle + '</h3><p>' + t.emptySub + '</p>' +
+        '<a class="btn btn-wa" target="_blank" rel="noopener" href="' + waLink(SITE.msgs.general) + '">' + I.wa + " " + t.emptyBtn + '</a></div>';
       return;
     }
     el.innerHTML = list.map(productCard).join("");
     observeReveal(el);
   }
 
-  /* ---------- الهيدر ---------- */
+  /* ---------- الثيم من config ---------- */
 
-  const NAV = [
-    { page: "home", href: "index.html", label: "الرئيسية" },
-    { page: "products", href: "products.html", label: "منتجاتنا" },
-    { page: "coffee", href: "coffee.html", label: "القهوة والبن" },
-    { page: "spices", href: "spices.html", label: "التوابل والبهارات" },
-    { page: "herbs", href: "herbs.html", label: "الأعشاب والحبوب" },
-    { page: "about", href: "about.html", label: "عن العطارة" },
-    { page: "contact", href: "contact.html", label: "تواصل معنا" }
-  ];
+  function injectTheme() {
+    const t = SITE.theme;
+    if (!t) return;
+    const st = document.createElement("style");
+    st.textContent =
+      ":root{--olive:" + t.olive + ";--olive-deep:color-mix(in srgb," + t.olive + " 82%,#000);" +
+      "--espresso:" + t.espresso + ";--espresso-deep:color-mix(in srgb," + t.espresso + " 85%,#000);" +
+      "--ivory:" + t.ivory + ";--sand:" + t.sand + ";--brass:" + t.brass + ";--brass-deep:color-mix(in srgb," + t.brass + " 78%,#000);" +
+      "--terra:" + t.terra + "}";
+    document.head.appendChild(st);
+  }
+
+  /* ---------- الهيدر ---------- */
 
   function brandHTML(latino) {
     return '<a class="brand" href="index.html" aria-label="' + SITE.name + '">' +
@@ -174,12 +192,12 @@
     const mount = $("#app-header");
     if (!mount) return;
     const page = document.body.dataset.page || "";
-    const links = NAV.map((n) =>
+    const links = C.nav.map((n) =>
       '<a href="' + n.href + '"' + (n.page === page ? ' class="active" aria-current="page"' : "") + ">" + n.label + "</a>"
     ).join("");
 
     mount.innerHTML =
-      '<div class="announce">أصالة العطارة المصرية<span class="star">✦</span>في كل تفصيلة</div>' +
+      '<div class="announce">' + CONTENT.announce + '</div>' +
       '<header class="site-header"><div class="container header-inner">' +
       brandHTML() +
       '<nav class="nav-links" aria-label="التنقل الرئيسي">' + links + '</nav>' +
@@ -199,7 +217,6 @@
       SITE.phones.map((p) => '<a href="tel:' + p.tel + '"><span class="num">' + p.label + "</span>" + I.phone + "</a>").join("") +
       "</div></div></aside>";
 
-    /* الدروار */
     const drawer = $("#drawer"), overlay = $("#drawerOverlay");
     const openDrawer = () => { drawer.classList.add("open"); overlay.classList.add("open"); document.body.style.overflow = "hidden"; };
     const closeDrawer = () => { drawer.classList.remove("open"); overlay.classList.remove("open"); document.body.style.overflow = ""; };
@@ -220,33 +237,33 @@
   function initFooter() {
     const mount = $("#app-footer");
     if (!mount) return;
-    const catLinks = [
-      '<li><a href="coffee.html">القهوة والبن</a></li>',
-      '<li><a href="spices.html">التوابل والبهارات</a></li>',
-      '<li><a href="herbs.html">الأعشاب والحبوب</a></li>',
-      '<li><a href="products.html?cat=grains">الحبوب والبقوليات</a></li>',
-      '<li><a href="products.html?cat=herbs">الأعشاب والشاي</a></li>',
-      '<li><a href="products.html?cat=other">منتجات أخرى</a></li>'
-    ].join("");
-    const navLinks = NAV.map((n) => '<li><a href="' + n.href + '">' + n.label + "</a></li>").join("");
+    const F = H.footer;
+    const catLinks =
+      '<li><a href="coffee.html">' + C.nav[2].label + '</a></li>' +
+      '<li><a href="spices.html">' + C.nav[3].label + '</a></li>' +
+      '<li><a href="herbs.html">' + C.nav[4].label + '</a></li>' +
+      '<li><a href="products.html?cat=grains">الحبوب والبقوليات</a></li>' +
+      '<li><a href="products.html?cat=herbs">الأعشاب والشاي</a></li>' +
+      '<li><a href="products.html?cat=other">منتجات أخرى</a></li>';
+    const navLinks = C.nav.map((n) => '<li><a href="' + n.href + '">' + n.label + "</a></li>").join("");
 
     mount.innerHTML =
       '<footer class="site-footer"><div class="container">' +
       '<div class="footer-grid">' +
       '<div class="footer-brand-col">' + brandHTML() +
-      '<p class="footer-about">عطارة مصرية في قلب الرحاب، بنوفر لك البن البرازيلي بدرجات تحميصه، والتوابل والأعشاب والحبوب وكل أساسيات المطبخ في مكان واحد.</p></div>' +
-      '<div><h4 class="footer-title">الأقسام</h4><ul class="footer-links">' + catLinks + "</ul></div>" +
-      '<div><h4 class="footer-title">روابط سريعة</h4><ul class="footer-links">' + navLinks + "</ul></div>" +
-      '<div><h4 class="footer-title">تواصل معانا</h4><ul class="footer-contact">' +
+      '<p class="footer-about">' + F.about + '</p></div>' +
+      '<div><h4 class="footer-title">' + F.catsTitle + '</h4><ul class="footer-links">' + catLinks + "</ul></div>" +
+      '<div><h4 class="footer-title">' + F.linksTitle + '</h4><ul class="footer-links">' + navLinks + "</ul></div>" +
+      '<div><h4 class="footer-title">' + F.contactTitle + '</h4><ul class="footer-contact">' +
       "<li>" + I.pin + "<span>" + SITE.addressAr + "</span></li>" +
       SITE.phones.map((p) => '<li>' + I.phone + '<a href="tel:' + p.tel + '"><span class="num">' + p.label + "</span></a></li>").join("") +
-      '<li>' + I.wa + '<a target="_blank" rel="noopener" href="' + waLink(SITE.msgs.general) + '">تواصل واتساب</a></li>' +
-      '<li>' + I.store + '<a target="_blank" rel="noopener" href="' + SITE.mapsUrl + '">اتجاهات الوصول على خرائط جوجل</a></li>' +
+      '<li>' + I.wa + '<a target="_blank" rel="noopener" href="' + waLink(SITE.msgs.general) + '">' + F.waLink + '</a></li>' +
+      '<li>' + I.store + '<a target="_blank" rel="noopener" href="' + SITE.mapsUrl + '">' + F.mapsLink + "</a></li>" +
       "</ul></div></div>" +
-      '<div class="footer-bottom"><span>جميع الحقوق محفوظة © <span class="num">' + new Date().getFullYear() + "</span> " + SITE.name + "</span>" +
+      '<div class="footer-bottom"><span>' + F.copyright + ' © <span class="num">' + new Date().getFullYear() + "</span> " + SITE.name + "</span>" +
       "<span>" + SITE.tagline + "</span></div>" +
       "</div></footer>" +
-      '<a class="float-wa" target="_blank" rel="noopener" aria-label="تواصل معانا على واتساب" href="' + waLink(SITE.msgs.general) + '">' + I.wa + "</a>";
+      '<a class="float-wa" target="_blank" rel="noopener" aria-label="' + C.waFloatLabel + '" href="' + waLink(SITE.msgs.general) + '">' + I.wa + "</a>";
   }
 
   /* ---------- البحث ---------- */
@@ -334,105 +351,139 @@
   function renderRoasts() {
     const roasts = $("#roastGrid");
     if (!roasts) return;
-    const levels = { light: "تحميص فاتح", medium: "تحميص وسط", dark: "تحميص غامق" };
-    const descs = {
-      light: "حمصة خفيفة بتحافظ على روح البن البرازيلي.",
-      medium: "الوسط بين الطعم الخفيف والقوي… اختيار متوازن.",
-      dark: "حمصة غامقة بطعم بن قوي وواضح."
-    };
-    roasts.innerHTML = PRODUCTS.filter((p) => p.cat === "coffee").map((p, i) =>
-      '<article class="roast-card reveal reveal-d' + (i + 1) + '">' +
-      '<div class="roast-visual" style="' + tileBG(p.color) + '">' + jarSVG(p.color, p.id.length, { beans: true }) + "</div>" +
-      '<div class="roast-body">' +
-      '<span class="roast-level" style="color:' + p.color + '">' + levels[p.roast] + "</span>" +
-      '<h3 class="roast-name">' + p.name + "</h3>" +
-      '<p class="roast-desc">' + descs[p.roast] + "</p>" +
-      '<a class="btn btn-olive btn-sm" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + ' اطلب واتساب</a>' +
-      "</div></article>"
-    ).join("");
+    const RL = H.roastLevels;
+    roasts.innerHTML = PRODUCTS.filter((p) => p.cat === "coffee").map((p, i) => {
+      const lv = RL[p.roast] || RL.medium;
+      return '<article class="roast-card reveal reveal-d' + (i + 1) + '">' +
+        '<div class="roast-visual" style="' + tileBG(p.color) + '">' + jarSVG(p.color, p.id.length, { beans: true }) + "</div>" +
+        '<div class="roast-body">' +
+        '<span class="roast-level" style="color:' + p.color + '">' + lv.label + "</span>" +
+        '<h3 class="roast-name">' + p.name + "</h3>" +
+        '<p class="roast-desc">' + lv.desc + "</p>" +
+        '<a class="btn btn-olive btn-sm" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + " " + C.orderBtn + "</a>" +
+        "</div></article>";
+    }).join("");
   }
 
   /* ---------- الصفحة الرئيسية ---------- */
 
-  const SHOWCASE = [
-    { t: "التوابل والبهارات", d: "بهارات مطحونة وحبوب كاملة تغطي كل أساسيات المطبخ.", img: "assets/img/brass-jars.png", href: "spices.html" },
-    { t: "الحبوب والبقوليات", d: "عدس وحمص وبرغل وفريك… أساسيات المطبخ المصري.", img: "assets/img/bins-grains.png", href: "products.html?cat=grains" },
-    { t: "الأعشاب الطبيعية", d: "أعشاب بلدي ونباتات مجففة للمشروبات والطبخ.", img: "assets/img/brass-jars-2.png", href: "products.html?cat=herbs" },
-    { t: "الشاي والمشروبات", d: "تشكيلة الشاي والمشروبات الساخنة.", img: "assets/img/interior-counter.png", pos: "center 30%", href: "products.html?cat=herbs" },
-    { t: "الزهور والنباتات المجففة", d: "ورد محمدي وزهرة البنفسج والزهور المجففة.", img: "assets/img/brass-jars.png", pos: "center 42%", href: "products.html?cat=herbs" },
-    { t: "البذور والحبوب الكاملة", d: "حبة بركة وسمسم وبذور وحبوب كاملة.", img: "assets/img/aisle-pasta.png", pos: "center 30%", href: "products.html?cat=whole" },
-    { t: "المكسرات والمنتجات المتنوعة", d: "تشكيلة إضافية من منتجات العطارة.", img: "assets/img/interior-aisle.png", pos: "left center", href: "products.html?cat=other" },
-    { t: "المكرونات ومنتجات الطعام", d: "كل أنواع المكرونات ومنتجات الطعام الجافة.", img: "assets/img/aisle-pasta.png", pos: "left 20%", href: "products.html?cat=other" }
-  ];
-
-  const SIGNATURE = [
-    { id: "kommoun", label: "كمون" },
-    { id: "felfel-aswad", label: "فلفل أسود" },
-    { id: "kurkum", label: "كركم" },
-    { id: "cinnamon", label: "قرفة" },
-    { id: "paprika", label: "بابريكا" },
-    { id: "kozbra", label: "كزبرة" },
-    { id: "shatta", label: "شطة" },
-    { id: "kari", label: "كاري" }
-  ];
-
-  const FEATURED = ["kommoun", "kurkum", "paprika-smoked", "habat-el-baraka", "ward-mohammadi", "hummus", "oats", "sesame-toasted"];
-
   function renderHome() {
-    /* كروت التحميص */
+    /* الهيرو */
+    const hero = H.hero;
+    setText("heroKicker", hero.kicker);
+    setHTML("heroTitle", hero.title + ' <span class="accent">' + hero.titleAccent + "</span>");
+    setText("heroSub", hero.sub);
+    setText("heroCta1", hero.cta1);
+    setText("heroCta2", hero.cta2);
+    setHTML("heroPoints", (hero.points || []).map((pt) =>
+      '<li>' + I.check + " " + pt + "</li>").join(""));
+    setAttr("heroEntrance", "src", hero.entranceImg);
+    setAttr("heroEntrance", "alt", hero.entranceAlt || "");
+    setAttr("heroBack", "src", hero.backImg);
+    setAttr("heroBack", "alt", hero.backAlt || "");
+    setHTML("heroChip", "<span>" + hero.chipMain + "<small>" + hero.chipSub + "</small></span>");
+
     renderRoasts();
 
+    /* القهوة */
+    setText("coffeeTitle", H.coffee.title);
+    setText("coffeeSub", H.coffee.sub);
+    setText("coffeeMoreBtn", H.coffee.moreBtn);
+    setText("coffeeKicker", H.coffee.kicker);
+
     /* أقسام العطارة */
-    const cats = $("#catGrid");
-    if (cats) {
-      cats.innerHTML = SHOWCASE.map((c, i) =>
-        '<a class="cat-card reveal" href="' + c.href + '">' +
-        '<img src="' + c.img + '" alt="' + c.t + '" loading="lazy" style="object-position:' + (c.pos || "center") + '">' +
-        '<div class="cat-body"><h3>' + c.t + "</h3><p>" + c.d + "</p>" +
-        '<span class="cat-cta">تصفح القسم ' + I.arrow + "</span></div></a>"
-      ).join("");
-    }
+    setText("catsTitle", H.cats.title);
+    setText("catsSub", H.cats.sub);
+    setText("catsKicker", H.cats.kicker);
+    setHTML("catGrid", (H.cats.items || []).map((c) =>
+      '<a class="cat-card reveal" href="' + c.href + '">' +
+      '<img src="' + c.img + '" alt="' + c.t + '" loading="lazy" style="object-position:' + (c.pos || "center") + '">' +
+      '<div class="cat-body"><h3>' + c.t + "</h3><p>" + c.d + "</p>" +
+      '<span class="cat-cta">' + C.moreLabel + " " + I.arrow + "</span></div></a>").join(""));
 
     /* البهارات المميزة */
-    const spices = $("#spiceGrid");
-    if (spices) {
-      spices.innerHTML = SIGNATURE.map((s) => {
-        const p = findProduct(s.id);
-        if (!p) return "";
-        return '<a class="spice-card reveal" href="product.html?id=' + p.id + '">' +
-          jarSVG(p.color, p.id.length) +
-          '<span class="sp-name">' + s.label + "</span>" +
-          '<span class="sp-cat">توابل وبهارات</span></a>';
-      }).join("");
-    }
+    setText("spiceTitle", H.spices.title);
+    setText("spiceSub", H.spices.sub);
+    setText("spiceKicker", H.spices.kicker);
+    setText("spiceMoreBtn", H.spices.moreBtn);
+    setHTML("spiceGrid", (H.spices.items || []).map((s) => {
+      const p = findProduct(s.id);
+      if (!p) return "";
+      return '<a class="spice-card reveal" href="product.html?id=' + p.id + '">' +
+        jarSVG(p.color, p.id.length) +
+        '<span class="sp-name">' + (s.label || p.name) + "</span>" +
+        '<span class="sp-cat">توابل وبهارات</span></a>';
+    }).join(""));
+
+    /* تجربة العطارة */
+    setText("storeKicker", H.store.kicker);
+    setText("storeTitle", H.store.title);
+    setText("storeSub", H.store.sub);
+    setText("storeBtn", H.store.btn);
+    setHTML("storeList", (H.store.list || []).map((li) =>
+      '<li>' + I.check + " " + li + "</li>").join(""));
+    setAttr("galleryMain", "src", H.store.galleryMain);
+    setAttr("galleryMain", "alt", H.store.galleryMainAlt || "");
+    setHTML("galleryRow", (H.store.galleryRow || []).map((g) =>
+      '<figure class="g-item"><img src="' + g.img + '" alt="' + (g.alt || "") + '" loading="lazy"></figure>').join(""));
 
     /* منتجات مختارة */
-    const feat = $("#featuredGrid");
-    if (feat) {
-      renderGrid(feat, FEATURED.map(findProduct).filter(Boolean));
-    }
+    setText("featuredTitle", H.featured.title);
+    setText("featuredSub", H.featured.sub);
+    setText("featuredKicker", H.featured.kicker);
+    setText("featuredMoreBtn", H.featured.moreBtn);
+    renderGrid($("#featuredGrid"), (H.featured.items || []).map(findProduct).filter(Boolean));
 
-    /* خريطة الفرع */
+    /* Wael Food */
+    setText("waelKicker", H.wael.kicker);
+    setHTML("waelTitle", H.wael.title);
+    setText("waelSub", H.wael.sub);
+    setText("waelBtn", H.wael.btn);
+    setText("waelTag", H.wael.tag);
+    setHTML("waelPoints", (H.wael.points || []).map((li) =>
+      '<li>' + I.check + " " + li + "</li>").join(""));
+    setAttr("waelImg", "src", H.wael.img);
+    setAttr("waelImg", "alt", H.wael.imgAlt || "");
+    setAttr("waelImg", "style", "object-position:" + (H.wael.imgPos || "center"));
+
+    /* المكان */
+    setText("locKicker", H.location.kicker);
+    setText("locTitle", H.location.title);
+    setText("locSub", H.location.sub);
+    setText("locAddressLabel", H.location.addressLabel);
+    setText("locPhoneLabel", H.location.phoneLabel);
+    setText("locBtn1", H.location.btn1);
+    setText("locBtn2", H.location.btn2);
     const map = $("#homeMap");
     if (map) map.src = SITE.mapsEmbed;
+
+    /* واتساب */
+    setText("waTitle", H.wa.title);
+    setText("waSub", H.wa.sub);
+    setText("waBtn", H.wa.btn);
   }
 
   /* ---------- صفحة المنتجات ---------- */
 
   function renderProductsPage() {
+    const t = P.products;
+    setText("prodHeroTitle", t.heroTitle);
+    setText("prodHeroSub", t.heroSub);
+    const field = $("#pageSearch");
+    if (field) field.placeholder = t.searchPlaceholder;
+
     const grid = $("#productsGrid");
     if (!grid) return;
     const chips = $("#catChips");
-    const field = $("#pageSearch");
     const count = $("#resultCount");
     const params = new URLSearchParams(window.location.search);
     let activeCat = params.get("cat") || "all";
     let q = params.get("q") || "";
 
-    const allChip = '<button class="chip" data-cat="all">الكل</button>';
-    chips.innerHTML = allChip + Object.keys(CATS).map((k) =>
-      '<button class="chip" data-cat="' + k + '">' + CATS[k].name + "</button>"
-    ).join("");
+    chips.innerHTML = '<button class="chip" data-cat="all">' + t.allChip + "</button>" +
+      Object.keys(CATS).map((k) =>
+        '<button class="chip" data-cat="' + k + '">' + CATS[k].name + "</button>"
+      ).join("");
 
     field.value = q;
 
@@ -440,17 +491,16 @@
       $$(".chip", chips).forEach((c) => c.classList.toggle("active", c.dataset.cat === activeCat));
     };
 
-    const apply = (scrollHint) => {
+    const apply = () => {
       let list = PRODUCTS.slice();
       if (activeCat !== "all") list = list.filter((p) => p.cat === activeCat);
       if (q) list = searchProducts(q);
       if (q || activeCat !== "all") {
-        count.innerHTML = "النتايج: <b class='num'>" + arDigits(list.length) + "</b> منتج" + (q ? " لكلمة «" + q + "»" : "");
+        count.innerHTML = t.resultsPrefix + ": <b class='num'>" + arDigits(list.length) + "</b> " + t.resultsLabel + (q ? " لكلمة «" + q + "»" : "");
       } else {
-        count.innerHTML = "كل منتجات العطارة: <b class='num'>" + arDigits(list.length) + "</b> منتج";
+        count.innerHTML = t.allLabel + ": <b class='num'>" + arDigits(list.length) + "</b> " + t.resultsLabel;
       }
       renderGrid(grid, list);
-      if (scrollHint) grid.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     chips.addEventListener("click", (e) => {
@@ -458,22 +508,23 @@
       if (!chip) return;
       activeCat = chip.dataset.cat;
       syncChips();
-      apply(false);
+      apply();
     });
 
-    let t = null;
+    let timer = null;
     field.addEventListener("input", () => {
-      clearTimeout(t);
-      t = setTimeout(() => { q = field.value.trim(); apply(false); }, 160);
+      clearTimeout(timer);
+      timer = setTimeout(() => { q = field.value.trim(); apply(); }, 160);
     });
 
     syncChips();
-    apply(false);
+    apply();
   }
 
   /* ---------- صفحة تفاصيل المنتج ---------- */
 
   function renderProductPage() {
+    const t = P.product;
     const wrap = $("#productDetail");
     if (!wrap) return;
     const id = new URLSearchParams(window.location.search).get("id");
@@ -481,13 +532,12 @@
 
     if (!p) {
       wrap.innerHTML = '<div class="empty-state" style="grid-column:1/-1">' + I.search +
-        '<h3>المنتج مش موجود</h3><p>يمكن الرابط قديم أو المنتج اتغير. تصفح كل منتجاتنا من هنا.</p>' +
-        '<a class="btn btn-olive" href="products.html">تصفح المنتجات</a></div>';
+        '<h3>' + t.notFoundTitle + '</h3><p>' + t.notFoundSub + '</p>' +
+        '<a class="btn btn-olive" href="products.html">' + t.notFoundBtn + '</a></div>';
       return;
     }
 
-    const crumb = $("#crumbName");
-    if (crumb) crumb.textContent = p.name;
+    setText("crumbName", p.name);
     document.title = p.name + " — " + SITE.name;
 
     wrap.innerHTML =
@@ -496,21 +546,21 @@
       '<div class="detail-info reveal in">' +
       '<span class="pc-cat">' + catName(p.cat) + (p.brand ? " · " + p.brand : "") + "</span>" +
       "<h1>" + p.name + "</h1>" +
-      '<p class="section-sub" style="margin-top:0">من منتجات ' + SITE.name + " — استفسر عن السعر والأوزان المتاحة واستلم طلبك من العطارة.</p>" +
+      '<p class="section-sub" style="margin-top:0">' + t.introLine.replace("{store}", SITE.name) + "</p>" +
       '<div class="price-card">' +
-      '<p class="price-label">السعر</p>' +
-      '<p class="price-value">للاستفسار عن السعر، تواصل معانا</p>' +
-      '<p class="price-note">الأوزان المتاحة والتفاصيل بنأكدها معاك على واتساب أو تليفون.</p>' +
+      '<p class="price-label">' + t.priceLabel + '</p>' +
+      '<p class="price-value">' + C.priceNote + '</p>' +
+      '<p class="price-note">' + t.priceNoteLabel + '</p>' +
       "</div>" +
       '<div class="buy-row">' +
-      '<div class="qty-stepper" aria-label="الكمية">' +
-      '<button type="button" id="qtyMinus" aria-label="تقليل الكمية">−</button>' +
+      '<div class="qty-stepper" aria-label="' + t.qtyLabel + '">' +
+      '<button type="button" id="qtyMinus" aria-label="' + t.qtyMinus + '">−</button>' +
       '<span class="qty-val num" id="qtyVal">١</span>' +
-      '<button type="button" id="qtyPlus" aria-label="زيادة الكمية">+</button>' +
+      '<button type="button" id="qtyPlus" aria-label="' + t.qtyPlus + '">+</button>' +
       "</div>" +
-      '<a class="btn btn-wa btn-lg" id="waOrder" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + ' اطلب على واتساب</a>' +
+      '<a class="btn btn-wa btn-lg" id="waOrder" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + " " + t.orderBtn + "</a>" +
       "</div>" +
-      '<div class="detail-note">' + I.info + "<span>الطلب بيتأكد معانا على واتساب، وتقدر تستلمه من العطارة في " + SITE.addressShort + ".</span></div>" +
+      '<div class="detail-note">' + I.info + "<span>" + t.orderNote.replace("{address}", SITE.addressShort) + "</span></div>" +
       "</div>";
 
     let qty = 1;
@@ -522,12 +572,13 @@
     $("#qtyMinus").addEventListener("click", () => { if (qty > 1) { qty--; sync(); } });
     $("#qtyPlus").addEventListener("click", () => { if (qty < 99) { qty++; sync(); } });
 
-    /* منتجات مشابهة */
     const rel = $("#relatedGrid");
     if (rel) {
       const related = PRODUCTS.filter((x) => x.cat === p.cat && x.id !== p.id).slice(0, 4);
       if (related.length) {
         $("#relatedWrap").style.display = "";
+        setText("relTitle", t.relatedTitle);
+        setText("relKicker", t.relatedKicker);
         renderGrid(rel, related);
       }
     }
@@ -537,12 +588,50 @@
 
   function renderCategoryPages() {
     const page = document.body.dataset.page;
-    if (page === "coffee") renderRoasts();
+    if (page === "coffee") {
+      const t = P.coffee;
+      setText("heroTitle", t.heroTitle);
+      setText("heroSub", t.heroSub);
+      setText("heroBtn1", t.btn1);
+      setText("heroBtn2", t.btn2);
+      setAttr("heroImg", "src", t.heroImg);
+      setAttr("heroImg", "alt", t.heroImgAlt || "");
+      setAttr("heroImg", "style", "object-position:" + (t.heroImgPos || "center"));
+      setText("roastKicker", t.roastKicker);
+      setText("roastTitle", t.roastTitle);
+      setText("roastSub", t.roastSub);
+      setText("gridHead-coffee", t.gridHead);
+      renderRoasts();
+    }
+    if (page === "spices") {
+      const t = P.spices;
+      setText("heroTitle", t.heroTitle);
+      setText("heroSub", t.heroSub);
+      setText("heroBtn1", t.btn1);
+      setText("heroBtn2", t.btn2);
+      setAttr("heroImg", "src", t.heroImg);
+      setAttr("heroImg", "alt", t.heroImgAlt || "");
+      setAttr("heroImg", "style", "object-position:" + (t.heroImgPos || "center"));
+      setText("gridHead-ground", t.groundHead);
+      setText("gridHead-whole", t.wholeHead);
+    }
+    if (page === "herbs") {
+      const t = P.herbs;
+      setText("heroTitle", t.heroTitle);
+      setText("heroSub", t.heroSub);
+      setText("heroBtn1", t.btn1);
+      setText("heroBtn2", t.btn2);
+      setAttr("heroImg", "src", t.heroImg);
+      setAttr("heroImg", "alt", t.heroImgAlt || "");
+      setAttr("heroImg", "style", "object-position:" + (t.heroImgPos || "center"));
+      setText("gridHead-herbs", t.herbsHead);
+      setText("gridHead-grains", t.grainsHead);
+    }
+
     const map = { coffee: ["coffee"], spices: ["ground", "whole"], herbs: ["herbs", "grains"] };
     const catsForPage = map[page];
     if (!catsForPage) return;
-
-    catsForPage.forEach((catKey, i) => {
+    catsForPage.forEach((catKey) => {
       const grid = $("#cat-" + catKey);
       if (!grid) return;
       const list = PRODUCTS.filter((p) => p.cat === catKey);
@@ -555,20 +644,79 @@
   /* ---------- صفحة التواصل ---------- */
 
   function renderContact() {
+    const t = P.contact;
+    setText("contactHeroTitle", t.heroTitle);
+    setText("contactHeroSub", t.heroSub);
+    setText("addressLabel", t.addressLabel);
+    setText("phoneTitle", t.phoneTitle);
+    setText("waLabel", t.waLabel);
+    setText("waValue", t.waValue);
+    setAttr("contactTelBtn", "href", "tel:" + (SITE.phones[0] ? SITE.phones[0].tel : ""));
+    setText("contactTelBtn", t.btn1);
+    setText("btn2", t.btn2);
+    setText("btn3", t.btn3);
     const list = $("#contactPhones");
     if (list) {
       list.innerHTML = SITE.phones.map((p) =>
         '<div class="contact-row"><span class="contact-ic">' + I.phone + "</span>" +
-        "<div><h4>اتصل بينا</h4><a href=\"tel:" + p.tel + '"><span class="num">' + p.label + "</span></a></div></div>"
+        '<div><h4>' + t.phoneTitle + '</h4><a href="tel:' + p.tel + '"><span class="num">' + p.label + "</span></a></div></div>"
       ).join("");
     }
     const map = $("#contactMap");
-    if (map) map.src = SITE.mapsEmbed;
+    if (map) {
+      map.src = SITE.mapsEmbed;
+      map.title = t.mapTitle;
+    }
+  }
+
+  /* ---------- صفحة عن العطارة ---------- */
+
+  function renderAbout() {
+    const t = P.about;
+    setText("heroTitle", t.heroTitle);
+    setText("heroSub", t.heroSub);
+    setText("heroBtn1", t.btn1);
+    setText("heroBtn2", t.btn2);
+    setAttr("heroImg", "src", t.heroImg);
+    setAttr("heroImg", "alt", t.heroImgAlt || "");
+    setText("storyKicker", t.storyKicker);
+    setText("storyTitle", t.storyTitle);
+    setHTML("storyParas", (t.paragraphs || []).map((par) =>
+      '<p style="color:#5A4F3F;margin-bottom:14px">' + par + "</p>").join(""));
+    setAttr("storyImg", "src", t.storyImg);
+    setAttr("storyImg", "alt", t.storyImgAlt || "");
+    setAttr("storyImg", "style", "object-position:" + (t.storyImgPos || "center"));
+    setText("galleryKicker", t.galleryKicker);
+    setText("galleryTitle", t.galleryTitle);
+    setText("gallerySub", t.gallerySub);
+    setAttr("galleryMain", "src", t.galleryMain);
+    setAttr("galleryMain", "alt", t.galleryMainAlt || "");
+    setHTML("galleryRow", (t.galleryRow || []).map((g) =>
+      '<figure class="g-item"><img src="' + g.img + '" alt="' + (g.alt || "") + '" loading="lazy"></figure>').join(""));
+    setText("bandTitle", t.bandTitle);
+    setText("bandSub", t.bandSub);
+    setText("bandBtn1", t.bandBtn1);
+    setText("bandBtn2", t.bandBtn2);
+  }
+
+  /* ---------- SEO ---------- */
+
+  function applySEO() {
+    const page = document.body.dataset.page;
+    const seo = P.seo[page];
+    if (!seo) return;
+    if (page !== "product") {
+      document.title = seo.title;
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta) meta.setAttribute("content", seo.desc);
+    }
   }
 
   /* ---------- تشغيل ---------- */
 
   function init() {
+    injectTheme();
+    applySEO();
     initHeader();
     initFooter();
     initSearch();
@@ -579,14 +727,9 @@
     if (page === "product") renderProductPage();
     if (page === "coffee" || page === "spices" || page === "herbs") renderCategoryPages();
     if (page === "contact") renderContact();
+    if (page === "about") renderAbout();
 
     observeReveal(document);
-
-    /* روابط tel عامة لو موجودة في HTML ثابت */
-    $$("[data-tel]").forEach((a) => {
-      const ph = SITE.phones.find((p) => p.label === a.dataset.tel);
-      if (ph) a.href = "tel:" + ph.tel;
-    });
   }
 
   if (document.readyState === "loading") {

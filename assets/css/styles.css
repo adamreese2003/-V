@@ -9,7 +9,7 @@
   --espresso: #2D2119;
   --espresso-deep: #241A14;
   --ivory: #F7F1E6;
-  --ivory-soft: #FCF8EF;
+  --ivory-soft: color-mix(in srgb, var(--ivory) 65%, #fff);
   --sand: #D9C6A5;
   --brass: #B59A62;
   --brass-deep: #9A7F49;
@@ -42,7 +42,7 @@ body {
   font-family: var(--font-body);
   background-color: var(--ivory);
   background-image:
-    linear-gradient(rgba(247, 241, 230, 0.9), rgba(247, 241, 230, 0.9)),
+    linear-gradient(color-mix(in srgb, var(--ivory) 90%, transparent), color-mix(in srgb, var(--ivory) 90%, transparent)),
     url("../img/bg-spoons.webp");
   background-size: cover;
   background-position: center;
@@ -182,9 +182,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .btn:active { transform: translateY(0); }
 
 .btn-brass {
-  background: linear-gradient(135deg, #C7AC72, #B59A62 55%, #A3895A);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--brass) 72%, #fff), var(--brass) 55%, color-mix(in srgb, var(--brass) 82%, #000));
   color: #241A10;
-  box-shadow: 0 8px 22px rgba(181, 154, 98, 0.38);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--brass) 40%, transparent);
 }
 .btn-brass:hover { box-shadow: 0 12px 28px rgba(181, 154, 98, 0.5); }
 
@@ -210,7 +210,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .section-alt {
   background-color: var(--ivory-soft);
   background-image:
-    linear-gradient(rgba(252, 248, 239, 0.9), rgba(252, 248, 239, 0.9)),
+    linear-gradient(color-mix(in srgb, var(--ivory) 92%, transparent), color-mix(in srgb, var(--ivory) 92%, transparent)),
     url("../img/bg-spice-market.jpg");
   background-size: cover;
   background-position: center;

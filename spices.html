@@ -26,29 +26,29 @@
             <span class="sep">/</span>
             <span class="current">التوابل والبهارات</span>
           </nav>
-          <h1 class="section-title">سر الطعم… في اختيار البهارات</h1>
-          <p class="section-sub">من البهارات الأساسية لكل مطبخ، للخلطات اللي بتكمل طعم أكلاتك — مطحونة أو حب كامل.</p>
+          <h1 class="section-title" id="heroTitle"></h1>
+          <p class="section-sub" id="heroSub"></p>
           <div class="hero-ctas" style="margin-top:28px">
-            <a class="btn btn-brass" href="#ground">البهارات المطحونة</a>
-            <a class="btn btn-outline-light" href="#whole">الحبوب الكاملة</a>
+            <a class="btn btn-brass" href="#ground" id="heroBtn1"></a>
+            <a class="btn btn-outline-light" href="#whole" id="heroBtn2"></a>
           </div>
         </div>
         <div class="cat-hero-visual">
-          <img src="assets/img/brass-jars.png" alt="موزعات نحاسية للتوابل والنباتات جوه العطارة" loading="lazy" style="object-position:center 45%">
+          <img id="heroImg" src="assets/img/brass-jars.png" alt="موزعات نحاسية للتوابل" loading="lazy">
         </div>
       </div>
     </section>
 
     <section class="section section-alt" id="ground">
       <div class="container">
-        <h2 class="subhead">التوابل والبهارات المطحونة <span id="count-ground" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
+        <h2 class="subhead"><span id="gridHead-ground"></span> <span id="count-ground" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
         <div class="product-grid" id="cat-ground"></div>
       </div>
     </section>
 
     <section class="section" id="whole">
       <div class="container">
-        <h2 class="subhead">التوابل والحبوب الكاملة <span id="count-whole" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
+        <h2 class="subhead"><span id="gridHead-whole"></span> <span id="count-whole" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
         <div class="product-grid" id="cat-whole"></div>
       </div>
     </section>
@@ -58,6 +58,7 @@
   <div id="app-footer"></div>
   <div class="search-overlay" id="searchOverlay"></div>
 
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/products.js"></script>
   <script src="assets/js/main.js"></script>

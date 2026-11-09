@@ -26,15 +26,15 @@
             <span class="sep">/</span>
             <span class="current">القهوة والبن</span>
           </nav>
-          <h1 class="section-title">قهوتك… على مزاجك</h1>
-          <p class="section-sub">اختار درجة التحميص اللي بتحبها، واستمتع بطعم القهوة على طريقتك. بن برازيلي متوفر بدرجات التحميص التلاتة.</p>
+          <h1 class="section-title" id="heroTitle"></h1>
+          <p class="section-sub" id="heroSub"></p>
           <div class="hero-ctas" style="margin-top:28px">
-            <a class="btn btn-brass" href="#roasts">اختار التحميص</a>
-            <a class="btn btn-outline-light" href="products.html">كل المنتجات</a>
+            <a class="btn btn-brass" href="#roasts" id="heroBtn1"></a>
+            <a class="btn btn-outline-light" href="products.html" id="heroBtn2"></a>
           </div>
         </div>
         <div class="cat-hero-visual">
-          <img src="assets/img/interior-counter.png" alt="من داخل عطارة شقير العطار" loading="lazy" style="object-position:center 30%">
+          <img id="heroImg" src="assets/img/interior-counter.png" alt="من داخل العطارة" loading="lazy">
         </div>
       </div>
     </section>
@@ -42,9 +42,9 @@
     <section class="section section-pattern-light" id="roasts" aria-labelledby="roastTitle">
       <div class="container">
         <div class="section-head center">
-          <span class="kicker">درجات التحميص</span>
-          <h2 class="section-title" id="roastTitle">اختار التحميص اللي على مزاجك</h2>
-          <p class="section-sub">كل درجة تحميص ليها طعمها المميز — اطلب درجتك على واتساب وأحنا نجهزهالك.</p>
+          <span class="kicker" id="roastKicker"></span>
+          <h2 class="section-title" id="roastTitle"></h2>
+          <p class="section-sub" id="roastSub"></p>
         </div>
         <div class="roast-grid" id="roastGrid"></div>
       </div>
@@ -52,7 +52,7 @@
 
     <section class="section section-alt">
       <div class="container">
-        <h2 class="subhead">كل منتجات القهوة والبن <span id="count-coffee" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
+        <h2 class="subhead"><span id="gridHead-coffee"></span> <span id="count-coffee" style="font-size:0.85rem; color:var(--muted); font-weight:500"></span></h2>
         <div class="product-grid" id="cat-coffee"></div>
       </div>
     </section>
@@ -62,6 +62,7 @@
   <div id="app-footer"></div>
   <div class="search-overlay" id="searchOverlay"></div>
 
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/products.js"></script>
   <script src="assets/js/main.js"></script>

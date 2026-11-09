@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>لوحة التحكم — شقير العطار</title>
+  <meta name="theme-color" content="#344532">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+  <header class="ad-topbar">
+    <div class="ad-topbar-inner">
+      <div class="ad-brand">
+        <svg class="ad-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="16" fill="#344532"/>
+          <path d="M32 16c8.8 0 16 7.2 16 16v14a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V32c0-8.8 7.2-16 16-16z" fill="none" stroke="#B59A62" stroke-width="3"/>
+          <path d="M32 26c0 6-3 9-8 10 1-6 4-9 8-10z" fill="#7BA05B"/>
+          <path d="M32 26c0 6 3 9 8 10-1-6-4-9-8-10z" fill="#A76545"/>
+          <circle cx="32" cy="24" r="2.4" fill="#B59A62"/>
+        </svg>
+        <div>
+          <strong>لوحة تحكم العطارة</strong>
+          <span id="connStatus" class="ad-conn loading">جاري التحميل…</span>
+        </div>
+      </div>
+      <div class="ad-topbar-actions">
+        <a class="ad-btn ghost" href="index.html" target="_blank">معاينة الموقع ↗</a>
+        <button class="ad-btn ghost" id="reloadBtn" type="button">تحديث البيانات</button>
+        <button class="ad-btn primary" id="publishBtn" type="button" disabled>نشر التغييرات <span id="changesBadge" class="ad-badge" hidden>0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="ad-tabs">
+    <div class="ad-tabs-inner">
+      <button class="ad-tab active" data-tab="products" type="button">المنتجات</button>
+      <button class="ad-tab" data-tab="content" type="button">النصوص والمحتوى</button>
+      <button class="ad-tab" data-tab="identity" type="button">الهوية والتواصل</button>
+      <button class="ad-tab" data-tab="images" type="button">الصور</button>
+      <button class="ad-tab" data-tab="publish" type="button">النشر والربط</button>
+    </div>
+  </nav>
+
+  <main class="ad-main">
+
+    <!-- ═══ المنتجات ═══ -->
+    <section class="ad-panel active" id="panel-products">
+      <div class="ad-card">
+        <h2>أسماء الأقسام</h2>
+        <p class="ad-hint">أسماء الأقسام بتظهر في الفلاتر وكروت المنتجات والفوتر.</p>
+        <div id="catsEditor"></div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-head">
+          <h2>المنتجات <span id="prodCount" class="ad-count"></span></h2>
+          <button class="ad-btn soft" id="addProductBtn" type="button">+ منتج جديد</button>
+        </div>
+        <div class="ad-chips" id="prodFilter"></div>
+        <div id="productsEditor"></div>
+      </div>
+    </section>
+
+    <!-- ═══ النصوص والمحتوى ═══ -->
+    <section class="ad-panel" id="panel-content">
+      <div class="ad-note">كل النصوص اللي بتظهر في الموقع — عدّل براحتك واضغط «نشر التغييرات» فوق.</div>
+      <div id="contentEditor"></div>
+    </section>
+
+    <!-- ═══ الهوية والتواصل ═══ -->
+    <section class="ad-panel" id="panel-identity">
+      <div class="ad-card">
+        <h2>هوية العطارة</h2>
+        <div id="identityEditor"></div>
+      </div>
+      <div class="ad-card">
+        <h2>بيانات التواصل</h2>
+        <div id="contactEditor"></div>
+      </div>
+      <div class="ad-card">
+        <h2>رسائل واتساب</h2>
+        <p class="ad-hint">دي الرسايل اللي بتتبعت لما العميل يدوس «اطلب واتساب». سيب العلامات {name} و {qty} زي ما هي.</p>
+        <div id="msgsEditor"></div>
+      </div>
+      <div class="ad-card">
+        <h2>ألوان الموقع</h2>
+        <p class="ad-hint">غيّر ألوان الهوية كلها من هنا — بتنعكس فوراً على كل صفحات الموقع.</p>
+        <div id="themeEditor" class="ad-colors"></div>
+      </div>
+    </section>
+
+    <!-- ═══ الصور ═══ -->
+    <section class="ad-panel" id="panel-images">
+      <div class="ad-card">
+        <h2>رفع صورة جديدة</h2>
+        <p class="ad-hint">ارفع صور من المحل أو منتجات — وبعدين استخدمها في أي حقل صورة من قايمة «الصور المتاحة». الصيغ المدعومة: jpg / png / webp / svg — الحجم الأفضل أقل من 2 ميجا.</p>
+        <div class="ad-upload">
+          <input type="file" id="imageFile" accept=".jpg,.jpeg,.png,.webp,.svg">
+          <button class="ad-btn primary" id="uploadImageBtn" type="button">رفع الصورة للموقع</button>
+        </div>
+        <div id="uploadStatus" class="ad-upload-status"></div>
+      </div>
+      <div class="ad-card">
+        <h2>الصور المتاحة</h2>
+        <p class="ad-hint">دي كل الصور الموجودة على الموقع. انسخ اسم أي صورة واستخدمه في حقول الصور، أو اختارها من القايمة مباشرة.</p>
+        <div id="imagesList" class="ad-images-grid"></div>
+      </div>
+    </section>
+
+    <!-- ═══ النشر والربط ═══ -->
+    <section class="ad-panel" id="panel-publish">
+      <div class="ad-card">
+        <h2>ربط جيت هاب (مرة واحدة بس)</h2>
+        <div id="tokenStatus"></div>
+        <div class="ad-token-row">
+          <input type="password" id="tokenInput" placeholder="الصق الـ Token هنا…" autocomplete="off">
+          <button class="ad-btn primary" id="saveTokenBtn" type="button">حفظ الربط</button>
+          <button class="ad-btn danger-ghost" id="clearTokenBtn" type="button">إلغاء الربط</button>
+        </div>
+        <details class="ad-help">
+          <summary>إزاي أعمل الـ Token؟ (خطوات بالصور الذهنية)</summary>
+          <ol>
+            <li>افتح جيت هاب وادخل على <b>Settings</b> من صورة حسابك.</li>
+            <li>من القائمة الجانبية: <b>Developer settings</b>.</li>
+            <li><b>Personal access tokens → Fine-grained tokens</b> → <b>Generate new token</b>.</li>
+            <li>الاسم: <code>attar-admin</code> — المدة: اختار اللي يناسبك.</li>
+            <li><b>Repository access</b>: Only select repositories → اختار <code>-V</code>.</li>
+            <li>تحت <b>Permissions → Repository permissions → Contents</b>: اختار <b>Read and write</b>.</li>
+            <li>اضغط <b>Generate token</b> وانسخ الرقم (بيبدأ بـ <code>github_pat_</code>) والصقه فوق.</li>
+          </ol>
+          <p class="ad-hint">الأمان: الـ Token بيتخزن في متصفحك انت بس (local storage)، ومش بيتخزن في الموقع ولا بيتشاف لأي حد تاني. تقدر تلغيه في أي وقت من إعدادات جيت هاب.</p>
+        </details>
+      </div>
+
+      <div class="ad-card">
+        <h2>التعديلات الجاهزة للنشر</h2>
+        <div id="pendingChanges"></div>
+        <p class="ad-hint">بعد النشر، الموقع بيتحدث أوتوماتيك خلال دقيقة or اتنين. لو الصفحة شكلها قديم اعمل تحديث بـ Ctrl+F5.</p>
+      </div>
+
+      <div class="ad-card">
+        <h2>ملاحظة أمان</h2>
+        <p class="ad-hint">اللوحة دي صفحة مفتوحة، لكن من غير الـ Token محدش يقدر يعدّل أو ينشر أي حاجة — التعديل بيتطلب صلاحيات حسابك على جيت هاب. متشاركش الـ Token مع حد.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="ad-toast" id="toast"></div>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

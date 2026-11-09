@@ -25,8 +25,8 @@
           <span class="sep">/</span>
           <span class="current">جميع المنتجات</span>
         </nav>
-        <h1 class="section-title">جميع المنتجات</h1>
-        <p class="section-sub">كل منتجات العطارة في مكان واحد — دور، فلتر، واطلب على واتساب مباشرة.</p>
+        <h1 class="section-title" id="prodHeroTitle"></h1>
+        <p class="section-sub" id="prodHeroSub"></p>
       </div>
     </section>
 
@@ -35,7 +35,7 @@
         <div class="toolbar">
           <label class="search-field">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="search" id="pageSearch" placeholder="دور على منتج… مثلاً: كمون، بن، ورد" aria-label="بحث في المنتجات">
+            <input type="search" id="pageSearch" placeholder="دور على منتج…" aria-label="بحث في المنتجات">
           </label>
         </div>
         <div class="chips" id="catChips" style="margin-bottom:22px" role="tablist" aria-label="تصفية حسب القسم"></div>
@@ -49,6 +49,7 @@
   <div id="app-footer"></div>
   <div class="search-overlay" id="searchOverlay"></div>
 
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/products.js"></script>
   <script src="assets/js/main.js"></script>

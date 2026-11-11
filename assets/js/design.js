@@ -17,6 +17,9 @@ const DESIGN = {
     maxw: 1260,
     motionHero: true
   },
-  overrides: [],
+  overrides: [
+    /* تعديلات يدوية من المالك — إخفاء زر Wael Food في الرئيسية */
+    { page: "home", sel: "#waelBtn", props: {}, raw: "", hidden: true }
+  ],
   customCSS: ""
 };

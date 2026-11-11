@@ -32,9 +32,9 @@
   if (d.customCSS) css.push(d.customCSS);
 
   (d.overrides || []).forEach(function (o) {
-    if (!o || !o.sel || !o.css) return;
+    if (!o || !o.sel) return;
     const scoped = (o.page && o.page !== "*") ? 'body[data-page="' + o.page + '"] ' : "";
-    css.push(scoped + o.sel + "{" + o.css + "}");
+    if (o.css) css.push(scoped + o.sel + "{" + o.css + "}");
     if (o.hidden) css.push(scoped + o.sel + "{display:none !important}");
   });
 
@@ -54,7 +54,7 @@
       let els = [];
       try { els = scope.querySelectorAll(o.sel); } catch (e) { return; }
       Array.prototype.forEach.call(els, function (el) {
-        if (o.text != null && o.text !== "") el.textContent = o.text;
+        if (o.text != null) el.textContent = o.text;
         if (o.img) {
           el.setAttribute("src", o.img);
           if (o.alt != null) el.setAttribute("alt", o.alt);

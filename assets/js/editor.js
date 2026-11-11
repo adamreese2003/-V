@@ -191,9 +191,9 @@
     }
     const css = [];
     draft.overrides.forEach((o) => {
-      if (!o.sel || !o.css) return;
+      if (!o.sel) return;
       const scoped = (o.page && o.page !== "*") ? 'body[data-page="' + o.page + '"] ' : "";
-      css.push(scoped + o.sel + "{" + o.css + "}");
+      if (o.css) css.push(scoped + o.sel + "{" + o.css + "}");
       if (o.hidden) css.push(scoped + o.sel + "{display:none !important}");
     });
     liveStyle.textContent = css.join("\n");
@@ -205,7 +205,7 @@
     let els = [];
     try { els = document.querySelectorAll(ov.sel); } catch (e) { return; }
     els.forEach((el) => {
-      if (ov.text != null && ov.text !== "") {
+      if (ov.text != null) {
         if (!originals.has(el)) originals.set(el, { text: el.textContent, src: el.getAttribute("src"), alt: el.getAttribute("alt") });
         if (ov.textPath && ov.textPath.length) {
           let node = el;

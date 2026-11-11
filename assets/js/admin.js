@@ -18,6 +18,29 @@
     "brass-jars-2.png", "bins-grains.png", "aisle-pasta.png", "bg-spoons.webp", "bg-spice-market.jpg"
   ];
 
+  const DESIGN_KEY = "attar_design_draft";
+
+  const PATTERNS = [
+    ["", "زي ما هي (الافتراضي)"],
+    ["none", "بلا زخرفة"],
+    ["star", "نجمة ثمانية"],
+    ["octagon", "ثماني وتصالب"],
+    ["zellige", "زليج"],
+    ["diamond", "معينات"],
+    ["hex", "سداسي"],
+    ["dots", "نقاط"],
+    ["diag", "خطوط مائلة"],
+    ["circles", "دوائر متداخلة"],
+    ["najma", "نجمة سداسية"]
+  ];
+
+  const DEFAULT_DESIGN = {
+    version: 1,
+    tokens: { patHero: "octagon", patDark: "star", patOlive: "zellige", patLight: "star", patFooter: "none", fontScale: 1, radius: 18, maxw: 1260, motionHero: true },
+    overrides: [],
+    customCSS: ""
+  };
+
   /* ---------- الحالة ---------- */
 
   let D = null;        // { config, content, products:{cats, items} }
@@ -86,12 +109,33 @@
     return new Function(text + "\nreturn " + name + ";")();
   }
 
+  async function loadDesign(base) {
+    try {
+      const d = parseConst(await fetchText(base + "assets/js/design.js"), "DESIGN");
+      return d && d.version ? d : clone(DEFAULT_DESIGN);
+    } catch (e) {
+      return clone(DEFAULT_DESIGN);
+    }
+  }
+
   async function loadAllFrom(base) {
     const config = parseConst(await fetchText(base + "assets/js/config.js"), "SITE");
     const content = parseConst(await fetchText(base + "assets/js/content.js"), "CONTENT");
     const cats = parseConst(await fetchText(base + "assets/js/products.js"), "CATS");
     const items = parseConst(await fetchText(base + "assets/js/products.js"), "PRODUCTS");
-    return { config, content, products: { cats, items } };
+    const design = await loadDesign(base);
+    return { config, content, products: { cats, items }, design };
+  }
+
+  function syncEditorDesign() {
+    /* المسودة اللي جاية من المحرر البصري هي مصدر الحقيقة للتصميم */
+    try {
+      const raw = localStorage.getItem(DESIGN_KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d && d.version) D.design = d;
+      }
+    } catch (e) { /* تجاهل */ }
   }
 
   async function loadData(useDraft) {
@@ -118,7 +162,8 @@
       const d = JSON.parse(raw);
       return JSON.stringify(d.config) !== JSON.stringify(ORIG.config) ||
              JSON.stringify(d.content) !== JSON.stringify(ORIG.content) ||
-             JSON.stringify(d.products) !== JSON.stringify(ORIG.products);
+             JSON.stringify(d.products) !== JSON.stringify(ORIG.products) ||
+             JSON.stringify(d.design) !== JSON.stringify(ORIG.design);
     } catch (e) { return false; }
   }
 
@@ -135,12 +180,14 @@
     if (JSON.stringify(D.config) !== JSON.stringify(ORIG.config)) list.push({ path: "assets/js/config.js", label: "الإعدادات والتواصل والألوان", make: makeConfig });
     if (JSON.stringify(D.content) !== JSON.stringify(ORIG.content)) list.push({ path: "assets/js/content.js", label: "النصوص والمحتوى", make: makeContent });
     if (JSON.stringify(D.products) !== JSON.stringify(ORIG.products)) list.push({ path: "assets/js/products.js", label: "المنتجات والأقسام", make: makeProducts });
+    if (JSON.stringify(D.design) !== JSON.stringify(ORIG.design)) list.push({ path: "assets/js/design.js", label: "التصميم والزخارف والأنماط", make: makeDesign });
     return list;
   }
 
   const makeConfig = () => '/* إعدادات الموقع — يتحدث تلقائياً من لوحة التحكم */\nconst SITE = ' + JSON.stringify(D.config, null, 2) + ';\n';
   const makeContent = () => '/* محتوى الموقع — يتحدث تلقائياً من لوحة التحكم */\nconst CONTENT = ' + JSON.stringify(D.content, null, 2) + ';\n';
   const makeProducts = () => '/* كتالوج المنتجات — يتحدث تلقائياً من لوحة التحكم */\n\nconst CATS = ' + JSON.stringify(D.products.cats, null, 2) + ';\n\nconst PRODUCTS = ' + JSON.stringify(D.products.items, null, 2) + ';\n';
+  const makeDesign = () => '/* تصميم الموقع — يتحدث تلقائياً من لوحة التحكم والمحرر البصري */\nconst DESIGN = ' + JSON.stringify(D.design, null, 2) + ';\n';
 
   function markDirty() {
     const n = dirtyFiles().length;
@@ -931,6 +978,122 @@
     colors.forEach((c) => root.appendChild(colorField("theme." + c[0], c[1], D.config)));
   }
 
+  /* ---------- التصميم البصري ---------- */
+
+  const EDITOR_PAGES = [
+    ["index.html", "الرئيسية"],
+    ["products.html", "كل المنتجات"],
+    ["coffee.html", "القهوة والبن"],
+    ["spices.html", "التوابل والبهارات"],
+    ["herbs.html", "الأعشاب والحبوب"],
+    ["about.html", "عن العطارة"],
+    ["contact.html", "تواصل معنا"]
+  ];
+
+  function renderDesignEditor() {
+    /* أزرار فتح المحرر على كل صفحة */
+    const pages = $("#editorPages");
+    pages.innerHTML = "";
+    EDITOR_PAGES.forEach((p) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "ad-btn soft";
+      b.textContent = "تعديل " + p[1];
+      b.addEventListener("click", () => { window.open(p[0] + "?edit=1", "_blank"); });
+      pages.appendChild(b);
+    });
+
+    /* الزخارف العامة */
+    const patRoot = $("#patternsEditor");
+    patRoot.innerHTML = "";
+    [
+      ["patHero", "زخرفة الهيرو وهيدر الصفحات"],
+      ["patDark", "الأقسام الغامقة"],
+      ["patOlive", "سيكشن الواتساب الأخضر"],
+      ["patLight", "الأقسام الفاتحة المرقشة"],
+      ["patFooter", "الفوتر"]
+    ].forEach((row) => {
+      const sel = document.createElement("select");
+      sel.innerHTML = PATTERNS.map((p) => '<option value="' + p[0] + '">' + p[1] + "</option>").join("");
+      sel.value = D.design.tokens[row[0]] || "";
+      sel.addEventListener("change", () => {
+        if (sel.value) D.design.tokens[row[0]] = sel.value;
+        else D.design.tokens[row[0]] = "";
+        changed();
+      });
+      patRoot.appendChild(fieldWrap(row[1], sel));
+    });
+
+    /* إعدادات عامة */
+    const tokRoot = $("#tokensEditor");
+    tokRoot.innerHTML = "";
+
+    const fsRow = document.createElement("div");
+    fsRow.className = "ad-field";
+    fsRow.innerHTML = "<label>حجم خط الموقع: <b id='fsVal' class='num'>" + (D.design.tokens.fontScale || 1) + "</b></label>";
+    const fs = document.createElement("input");
+    fs.type = "range"; fs.min = "0.85"; fs.max = "1.25"; fs.step = "0.05"; fs.value = D.design.tokens.fontScale || 1;
+    fs.addEventListener("input", () => { D.design.tokens.fontScale = +fs.value; $("#fsVal").textContent = fs.value; changed(); });
+    fsRow.appendChild(fs);
+    tokRoot.appendChild(fsRow);
+
+    const radRow = document.createElement("div");
+    radRow.className = "ad-field";
+    radRow.innerHTML = "<label>استدارة الحواف: <b id='radVal' class='num'>" + (D.design.tokens.radius != null ? D.design.tokens.radius : 18) + "</b> بكسل</label>";
+    const rad = document.createElement("input");
+    rad.type = "range"; rad.min = "0"; rad.max = "34"; rad.step = "2"; rad.value = D.design.tokens.radius != null ? D.design.tokens.radius : 18;
+    rad.addEventListener("input", () => { D.design.tokens.radius = +rad.value; $("#radVal").textContent = rad.value; changed(); });
+    radRow.appendChild(rad);
+    tokRoot.appendChild(radRow);
+
+    const mwRow = document.createElement("div");
+    mwRow.className = "ad-field";
+    mwRow.innerHTML = "<label>عرض الصفحة الأقصى: <b id='mwVal' class='num'>" + (D.design.tokens.maxw || 1260) + "</b> بكسل</label>";
+    const mw = document.createElement("input");
+    mw.type = "range"; mw.min = "1080"; mw.max = "1500"; mw.step = "20"; mw.value = D.design.tokens.maxw || 1260;
+    mw.addEventListener("input", () => { D.design.tokens.maxw = +mw.value; $("#mwVal").textContent = mw.value; changed(); });
+    mwRow.appendChild(mw);
+    tokRoot.appendChild(mwRow);
+
+    const mvWrap = document.createElement("div");
+    mvWrap.className = "ad-field";
+    const mvLabel = document.createElement("label");
+    mvLabel.style.display = "flex";
+    mvLabel.style.alignItems = "center";
+    mvLabel.style.gap = "9px";
+    const mv = document.createElement("input");
+    mv.type = "checkbox";
+    mv.checked = D.design.tokens.motionHero !== false;
+    mv.addEventListener("change", () => { D.design.tokens.motionHero = mv.checked; changed(); });
+    mvLabel.appendChild(mv);
+    mvLabel.appendChild(document.createTextNode("حركة دخول الهيرو عند فتح الصفحة"));
+    mvWrap.appendChild(mvLabel);
+    tokRoot.appendChild(mvWrap);
+
+    /* CSS مخصص */
+    const cssBox = $("#customCss");
+    cssBox.value = D.design.customCSS || "";
+    cssBox.oninput = () => { D.design.customCSS = cssBox.value; changed(); };
+  }
+
+  $("#resetDesignBtn").addEventListener("click", () => {
+    if (!confirm("ده هيرجع كل تعديلات التصميم والزخارف للنسخة الأصلية (مش بيمسح النصوص ولا المنتجات). متأكد؟")) return;
+    D.design = clone(DEFAULT_DESIGN);
+    try { localStorage.removeItem(DESIGN_KEY); } catch (e) { /* تجاهل */ }
+    changed();
+    renderDesignEditor();
+    toast("التصميم رجع للأصلي — اضغط «نشر التغييرات» لتطبيق ده على الموقع", "ok");
+  });
+
+  window.addEventListener("message", (e) => {
+    if (e.data === "attar-design-updated") {
+      syncEditorDesign();
+      changed();
+      renderDesignEditor();
+      toast("وصلت تعديلات جديدة من المحرر البصري — راجعها واضغط «نشر التغييرات»", "ok");
+    }
+  });
+
   /* ---------- الصور ---------- */
 
   async function loadImages() {
@@ -1050,6 +1213,7 @@
       }
       ORIG = clone(D);
       markDirty();
+      try { localStorage.removeItem(DESIGN_KEY); } catch (e) { /* تجاهل */ }
       toast("تم النشر ✓ — الموقع هيتحدث خلال دقيقة أو اتنين", "ok");
       renderPending();
     } catch (e) {
@@ -1151,6 +1315,8 @@
     renderCatsEditor();
     renderProductsEditor();
     renderContentEditor();
+    syncEditorDesign();
+    renderDesignEditor();
     renderIdentityEditor();
     renderContactEditor();
     renderMsgsEditor();

@@ -133,29 +133,23 @@
 
   /* ---------- قوالب الكروت ---------- */
 
-  function productCard(p) {
-    return '<article class="product-card reveal">' +
-      '<a class="pc-tile" style="' + tileBG(p.color) + '" href="product.html?id=' + p.id + '" aria-label="' + p.name + '">' +
-      jarSVG(p.color, p.id.length, { beans: p.cat === "coffee" }) + '</a>' +
-      '<div class="pc-body">' +
-      '<span class="pc-cat">' + catName(p.cat) + '</span>' +
-      '<h3 class="pc-name"><a href="product.html?id=' + p.id + '">' + p.name + '</a></h3>' +
-      '<p class="pc-price">' + C.priceNote + '</p>' +
-      '<div class="pc-foot">' +
-      '<a class="wa-mini" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + " " + C.orderBtn + '</a>' +
-      '</div></div></article>';
-  }
-
   function renderGrid(el, list) {
     if (!el) return;
     const t = P.products;
     if (!list.length) {
-      el.innerHTML = '<div class="empty-state" style="grid-column:1/-1">' + I.search +
+      el.innerHTML = '<div class="empty-state">' + I.search +
         '<h3>' + t.emptyTitle + '</h3><p>' + t.emptySub + '</p>' +
         '<a class="btn btn-wa" target="_blank" rel="noopener" href="' + waLink(SITE.msgs.general) + '">' + I.wa + " " + t.emptyBtn + '</a></div>';
       return;
     }
-    el.innerHTML = list.map(productCard).join("");
+    el.innerHTML = '<div class="menu-list">' + list.map((p, i) =>
+      '<a class="menu-item reveal" href="product.html?id=' + p.id + '" style="--pc:' + p.color + '">' +
+      '<span class="mi-num num">' + arDigits(String(i + 1).padStart(2, "0")) + "</span>" +
+      '<span class="mi-main"><span class="mi-name">' + p.name + "</span></span>" +
+      '<span class="mi-leader"></span>' +
+      '<span class="mi-cat">' + catName(p.cat) + "</span>" +
+      "</a>"
+    ).join("") + "</div>";
     observeReveal(el);
   }
 
@@ -197,6 +191,7 @@
     ).join("");
 
     mount.innerHTML =
+      '<a class="skip-link" href="#main-content">تخطَّ إلى المحتوى</a>' +
       '<div class="announce">' + CONTENT.announce + '</div>' +
       '<header class="site-header"><div class="container header-inner">' +
       brandHTML() +
@@ -309,8 +304,7 @@
       }
       results.innerHTML = found.map((p) =>
         '<a class="search-item" href="product.html?id=' + p.id + '">' +
-        jarSVG(p.color, p.id.length, { beans: p.cat === "coffee" }) +
-        '<span><span class="si-name">' + p.name + '</span><br><span class="si-cat">' + catName(p.cat) + "</span></span>" +
+        '<span class="si-text"><span class="si-name">' + p.name + '</span><br><span class="si-cat">' + catName(p.cat) + "</span></span>" +
         '<span class="si-arrow">' + I.arrow + "</span></a>"
       ).join("");
     };
@@ -352,17 +346,15 @@
     const roasts = $("#roastGrid");
     if (!roasts) return;
     const RL = H.roastLevels;
-    roasts.innerHTML = PRODUCTS.filter((p) => p.cat === "coffee").map((p, i) => {
+    roasts.innerHTML = '<div class="menu-list">' + PRODUCTS.filter((p) => p.cat === "coffee").map((p, i) => {
       const lv = RL[p.roast] || RL.medium;
-      return '<article class="roast-card reveal reveal-d' + (i + 1) + '">' +
-        '<div class="roast-visual" style="' + tileBG(p.color) + '">' + jarSVG(p.color, p.id.length, { beans: true }) + "</div>" +
-        '<div class="roast-body">' +
-        '<span class="roast-level" style="color:' + p.color + '">' + lv.label + "</span>" +
-        '<h3 class="roast-name">' + p.name + "</h3>" +
-        '<p class="roast-desc">' + lv.desc + "</p>" +
-        '<a class="btn btn-olive btn-sm" target="_blank" rel="noopener" href="' + waLink(productMsg(p.name)) + '">' + I.wa + " " + C.orderBtn + "</a>" +
-        "</div></article>";
-    }).join("");
+      return '<a class="menu-item reveal reveal-d' + (i + 1) + '" href="product.html?id=' + p.id + '" style="--pc:' + p.color + '">' +
+        '<span class="mi-num num">' + arDigits(String(i + 1).padStart(2, "0")) + "</span>" +
+        '<span class="mi-main"><span class="mi-name">' + p.name + '</span><span class="mi-desc">' + lv.desc + "</span></span>" +
+        '<span class="mi-leader"></span>' +
+        '<span class="mi-level" style="color:' + p.color + '">' + lv.label + "</span>" +
+        "</a>";
+    }).join("") + "</div>";
   }
 
   /* ---------- الصفحة الرئيسية ---------- */
@@ -410,7 +402,6 @@
       const p = findProduct(s.id);
       if (!p) return "";
       return '<a class="spice-card reveal" href="product.html?id=' + p.id + '">' +
-        jarSVG(p.color, p.id.length) +
         '<span class="sp-name">' + (s.label || p.name) + "</span>" +
         '<span class="sp-cat">توابل وبهارات</span></a>';
     }).join(""));
@@ -541,8 +532,11 @@
     document.title = p.name + " — " + SITE.name;
 
     wrap.innerHTML =
-      '<div class="detail-visual reveal in" style="' + tileBG(p.color) + '">' +
-      jarSVG(p.color, p.id.length, { beans: p.cat === "coffee" }) + "</div>" +
+      '<div class="detail-visual reveal in">' +
+      '<span class="dv-cat">' + catName(p.cat) + (p.brand ? " · " + p.brand : "") + "</span>" +
+      '<h2 class="dv-name">' + p.name + "</h2>" +
+      '<span class="dv-rule" style="background:' + p.color + '"></span>' +
+      "</div>" +
       '<div class="detail-info reveal in">' +
       '<span class="pc-cat">' + catName(p.cat) + (p.brand ? " · " + p.brand : "") + "</span>" +
       "<h1>" + p.name + "</h1>" +

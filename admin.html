@@ -41,6 +41,7 @@
     <div class="ad-tabs-inner">
       <button class="ad-tab active" data-tab="products" type="button">المنتجات</button>
       <button class="ad-tab" data-tab="content" type="button">النصوص والمحتوى</button>
+      <button class="ad-tab" data-tab="design" type="button">التصميم البصري</button>
       <button class="ad-tab" data-tab="identity" type="button">الهوية والتواصل</button>
       <button class="ad-tab" data-tab="images" type="button">الصور</button>
       <button class="ad-tab" data-tab="publish" type="button">النشر والربط</button>
@@ -71,6 +72,39 @@
     <section class="ad-panel" id="panel-content">
       <div class="ad-note">كل النصوص اللي بتظهر في الموقع — عدّل براحتك واضغط «نشر التغييرات» فوق.</div>
       <div id="contentEditor"></div>
+    </section>
+
+    <!-- ═══ التصميم البصري ═══ -->
+    <section class="ad-panel" id="panel-design">
+      <div class="ad-card">
+        <h2>المحرر البصري — عدّل على كل بكسل في الموقع</h2>
+        <p class="ad-hint">افتح الموقع في وضع التحرير، واضغط على أي عنصر تحب تعدّله: النصوص، الألوان، الزخارف، التباعد، الخطوط، الصور، الإخفاء، و CSS مخصص. التعديلات بتتسجل أوتوماتيك وترجع تلاقيها هنا للنشر.</p>
+        <div class="ad-pages" id="editorPages"></div>
+      </div>
+
+      <div class="ad-card">
+        <h2>الزخارف العامة</h2>
+        <p class="ad-hint">اختار نمط الزخرفة الإسلامية لكل جزء من الموقع — بتتطبق على كل الصفحات فوراً.</p>
+        <div id="patternsEditor" class="ad-colors"></div>
+      </div>
+
+      <div class="ad-card">
+        <h2>إعدادات التصميم العامة</h2>
+        <p class="ad-hint">حجم خط الموقع، استدارة الحواف، عرض الصفحة، وحركة دخول الهيرو.</p>
+        <div id="tokensEditor"></div>
+      </div>
+
+      <div class="ad-card">
+        <h2>CSS مخصص للموقع كله</h2>
+        <p class="ad-hint">لو إنت فاهم CSS — اكتب أي كود بيتطبق على كل الصفحات بعد كل الأنماط.</p>
+        <textarea id="customCss" rows="6" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-family:monospace;direction:ltr;text-align:left"></textarea>
+      </div>
+
+      <div class="ad-card">
+        <h2>إعادة ضبط التصميم</h2>
+        <p class="ad-hint">بترجع كل تعديلات التصميم والزخارف للنسخة الأصلية (مش بتأثر على النصوص والمنتجات).</p>
+        <button class="ad-btn danger-ghost" id="resetDesignBtn" type="button">استرجاع التصميم الأصلي</button>
+      </div>
     </section>
 
     <!-- ═══ الهوية والتواصل ═══ -->

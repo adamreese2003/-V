@@ -509,3 +509,15 @@ details.ad-group > .ad-group-body { padding: 6px 18px 18px; border-top: 1px dash
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ---------- المحرر البصري ---------- */
+.ad-pages { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.ad-pages .ad-btn { min-width: 130px; }
+.ad-colors select {
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-family: inherit;
+  width: 100%;
+  background: #fff;
+}
